@@ -17,6 +17,9 @@ def _apply_style(df: pd.DataFrame) -> Styler:
     )
 
 
+_ALL_COLS = ["eid", "year", "title", "source", "authors", "doi"]
+
+
 def _docs_to_df(documents: "list[Document]", columns: list[str] | None = None) -> Styler:
     rows = [
         {
@@ -29,7 +32,7 @@ def _docs_to_df(documents: "list[Document]", columns: list[str] | None = None) -
         }
         for doc in documents
     ]
-    df = pd.DataFrame(rows)
+    df = pd.DataFrame(rows, columns=_ALL_COLS)
     if columns:
         df = df[columns]
     return _apply_style(df)
