@@ -1,3 +1,3 @@
-from .protocols import QueryBackendProtocol
+from .protocols import SearchClientProtocol
 
-__all__ = ["QueryBackendProtocol"]
+__all__ = ["SearchClientProtocol"]

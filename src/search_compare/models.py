@@ -32,10 +32,30 @@ def _docs_to_df(documents: "list[Document]", columns: list[str] | None = None) -
         }
         for doc in documents
     ]
-    df = pd.DataFrame(rows, columns=_ALL_COLS)
+    df = pd.DataFrame(rows, columns=_ALL_COLS).sort_values("year", ascending=False, na_position="last")
     if columns:
         df = df[columns]
     return _apply_style(df)
+
+
+@dataclass
+class ControlArticle:
+    title: str
+    year: int | None = None
+    eid: str | None = None  # populated by SearchManager.check()
+
+
+@dataclass
+class ValidationResult:
+    found: list[ControlArticle]
+    not_found: list[ControlArticle]
+
+    def summary(self) -> str:
+        total = len(self.found) + len(self.not_found)
+        return (
+            f"Encontrados    : {len(self.found)}/{total}\n"
+            f"Não encontrados: {len(self.not_found)}/{total}"
+        )
 
 
 class ComparisonDataFrames(NamedTuple):

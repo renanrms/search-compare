@@ -1,5 +1,7 @@
 from typing import Protocol
 
+from ..models import SearchResult
 
-class QueryBackendProtocol(Protocol):
-    def build(self, core: str) -> str: ...
+
+class SearchClientProtocol(Protocol):
+    def search(self, query: str, max_results: int = ...) -> SearchResult: ...

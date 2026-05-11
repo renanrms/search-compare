@@ -1536,7 +1536,7 @@ wheels = [
 
 [[package]]
 name = "search-compare"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "pandas" },
@@ -1553,9 +1553,9 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pandas", specifier = ">=3.0.2" },
-    { name = "python-dotenv", specifier = ">=1.2.2" },
-    { name = "requests", specifier = ">=2.33.1" },
+    { name = "pandas", specifier = ">=2.2.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "requests", specifier = ">=2.28.0" },
 ]
 
 [package.metadata.requires-dev]

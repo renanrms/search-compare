@@ -6,6 +6,11 @@ import requests
 
 from .config import get_api_key
 from ...models import Document, SearchResult
+from ...picoc import PicocString
+from ...query import Query
+
+_VALID_FIELDS = {"TITLE-ABS-KEY", "TITLE", "ABS", "KEY"}
+_VALID_DOC_TYPES = {"ar", "re", "cp", "ch", "bk", "ed", "le", "no", "sh"}
 
 _BASE_URL = "https://api.elsevier.com/content/search/scopus"
 _PAGE_SIZE = 25
@@ -20,6 +25,38 @@ class ScopusClient:
             "X-ELS-APIKey": self._api_key,
             "Accept": "application/json",
         }
+
+    def build_query(
+        self,
+        core: str | PicocString,
+        field: str = "TITLE-ABS-KEY",
+        year_min: int | None = None,
+        year_max: int | None = None,
+        language: str | None = None,
+        doc_type: str | list[str] | None = None,
+    ) -> Query:
+        if field not in _VALID_FIELDS:
+            raise ValueError(f"Invalid field '{field}'. Valid options: {sorted(_VALID_FIELDS)}")
+
+        doc_types = [doc_type] if isinstance(doc_type, str) else (doc_type or [])
+        invalid = [t for t in doc_types if t not in _VALID_DOC_TYPES]
+        if invalid:
+            raise ValueError(f"Invalid doc_type {invalid}. Valid options: {sorted(_VALID_DOC_TYPES)}")
+
+        core_str = core.build() if isinstance(core, PicocString) else core
+        parts = [f"{field}({core_str})"]
+
+        if year_min is not None:
+            parts.append(f"PUBYEAR > {year_min}")
+        if year_max is not None:
+            parts.append(f"PUBYEAR < {year_max}")
+        if language is not None:
+            parts.append(f"LANGUAGE({language})")
+        if doc_types:
+            parts.append(f"DOCTYPE({' OR '.join(doc_types)})")
+
+        picoc_ref = core if isinstance(core, PicocString) else None
+        return Query(" AND ".join(parts), self, picoc=picoc_ref)
 
     def search(self, query: str, max_results: int = 500) -> SearchResult:
         """Executes a Scopus search and returns a SearchResult.
