@@ -13,10 +13,17 @@ class PicocString:
     outcome: list[str] = field(default_factory=list)
     context: list[str] = field(default_factory=list)
 
+    @staticmethod
+    def _quote(term: str) -> str:
+        if " " in term and not term.startswith('"'):
+            return f'"{term}"'
+        return term
+
     def build(self) -> str:
         parts = []
         for component in _COMPONENTS:
             terms = getattr(self, component)
             if terms:
-                parts.append(f"({' OR '.join(terms)})")
+                quoted = [self._quote(t) for t in terms]
+                parts.append(f"({' OR '.join(quoted)})")
         return " AND ".join(parts)

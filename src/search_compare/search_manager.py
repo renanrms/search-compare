@@ -19,10 +19,10 @@ class SearchManager:
         self._client = client
         self._controls: list[ControlArticle] = []
 
-    def add_controls(self, articles: list[ControlArticle]) -> None:
-        self._controls.extend(articles)
+    def set_control_articles(self, articles: list[ControlArticle]) -> None:
+        self._controls = articles
 
-    def check(self) -> ValidationResult:
+    def check_control_articles_exists(self) -> ValidationResult:
         """Searches Scopus for each control article and stores the found EID."""
         found: list[ControlArticle] = []
         not_found: list[ControlArticle] = []
@@ -37,6 +37,10 @@ class SearchManager:
                 found.append(article)
             else:
                 not_found.append(article)
+                print(
+                    f"✗ Artigo não encontrado na base: '{article.title}' ({article.year})\n"
+                    "Verifique os dados inseridos e a existência do artigo na base de dados."
+                )
 
         return ValidationResult(found=found, not_found=not_found)
 
@@ -52,16 +56,19 @@ class SearchManager:
             rows = []
             for article in self._controls:
                 if article.eid is None:
-                    in1 = in2 = "— não encontrado na base"
+                    in1 = in2 = "Não encontrado na base"
                 else:
                     in1 = "✓" if article.eid in eids1 else "✗"
                     in2 = "✓" if article.eid in eids2 else "✗"
-                rows.append({"ano": article.year, "título": article.title, "query 1": in1, "query 2": in2})
+                rows.append(
+                    {"year": article.year, "title": article.title, "query 1": in1, "query 2": in2})
 
             total = len(self._controls)
             found = sum(1 for a in self._controls if a.eid is not None)
-            df = pd.DataFrame(rows).sort_values("ano", ascending=False, na_position="last")
-            display(Markdown(f"### Artigos de controle ({found}/{total} encontrados na base)"))
+            df = pd.DataFrame(rows).sort_values(
+                "year", ascending=False, na_position="last")
+            display(
+                Markdown(f"### Artigos de controle ({found}/{total} encontrados na base)"))
             display(_apply_style(df))
 
         # --- Comparação dos resultados ---

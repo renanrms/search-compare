@@ -12,6 +12,7 @@ _TABLE_STYLES: list[dict[str, str | list[tuple[str, str]]]] = [
 def _apply_style(df: pd.DataFrame) -> Styler:
     return (
         df.style
+        .hide()
         .set_properties(**{"text-align": "left"})
         .set_table_styles(_TABLE_STYLES)  # type: ignore[arg-type]
     )

@@ -1,25 +1,15 @@
 [project]
 name = "search-compare"
-version = "0.1.1"
+version = "0.2.0"
 description = "Compare search results from two PICOC-based query strings"
 readme = "README.md"
-authors = [
-    { name = "Renan Passos", email = "renanvmsp@gmail.com" }
-]
+authors = [{ name = "Renan Passos", email = "renanvmsp@gmail.com" }]
 requires-python = ">=3.12"
-dependencies = [
-    "pandas>=2.2.0",
-    "python-dotenv>=1.0.0",
-    "requests>=2.28.0",
-]
+dependencies = ["pandas>=2.2.0", "python-dotenv>=1.0.0", "requests>=2.28.0"]
 
 [build-system]
 requires = ["uv_build>=0.11.12,<0.12.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = [
-    "ipykernel>=7.2.0",
-    "jupyter>=1.1.1",
-    "pytest>=9.0.3",
-]
+dev = ["ipykernel>=7.2.0", "jupyter>=1.1.1", "pytest>=9.0.3"]
